@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 function TodoList(){
+    //toDoData
     const TodoData = {
         todos: [
             { id: 1, name: "Read book", done: true },
@@ -13,6 +14,7 @@ function TodoList(){
           ],
     }
 
+    //handle functioon
     function handleAddThings(){
         var inputThings=document.getElementById('Input').value;
         console.log(inputThings);
@@ -23,6 +25,7 @@ function TodoList(){
         console.log(done);
     }
 
+    //component function
     function Todo_things(item){
         return(
             <div className='w-full h-[80px] rounded-[6px] bg-white mb-4 border-l-[6px] border-[#97a2df] flex'>  
@@ -43,6 +46,7 @@ function TodoList(){
         )
     }
 
+    //main content for export to App.js
     return(
         <div className='fullBg'>
             <div className=' container mx-auto px-4 '>
