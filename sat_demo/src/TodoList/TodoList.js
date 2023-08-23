@@ -30,7 +30,7 @@ function TodoList(){
 
     function handleDoneChange(doneKey){//切換checkbox
         setTodoData((todoData) =>
-            todoData.map((todo) => todo.id === doneKey+1 ? { ...todo, done: !todo.done } : todo))//找到對應的物件並修改值
+            todoData.map((todo) => todo.id === doneKey ? { ...todo, done: !todo.done } : todo))//找到對應的物件並修改值
     }
 
     function handleDelete(deleteKey){//刪除任務
@@ -47,7 +47,7 @@ function TodoList(){
             setDoneMode(true);
         }else{
             const originData = []
-            for(let x=1;x<=todoData.length;x++){//依id(建立次序)進行排列
+            for(let x=1;x<=100;x++){//依id(建立次序)進行排列
                 const addObj = todoData.filter(data => data.id === x)
                 originData.push(...addObj);
             }
@@ -60,7 +60,7 @@ function TodoList(){
 
     useEffect(() => {//重新統計完成度
             const doneArray = todoData.filter(data => data.done === true);
-            setProgress((Number(doneArray.length)/Number(todoData.length))*100)
+            setProgress(Math.round((Number(doneArray.length)/Number(todoData.length))*100))
       });
 
 
@@ -89,7 +89,7 @@ function TodoList(){
     //main content for export to App.js
     return(
         <div className='fullBg'>
-            <div className=' container mx-auto px-4 '>
+            <div className=' container max-w-[940px] mx-auto px-4 '>
                 <div className='border-b-2 border-[#97a2df] pt-[50px]'>
                     <div className='text-[#6877c9] text-[30px] leading-8 mb-2'>Todo List</div>
                     <div className='text-[#8b97da] text-[15px] mb-2'>Add things to do</div>
@@ -102,17 +102,17 @@ function TodoList(){
                 </div>
             </div>
                 <div className='h-[500px] overflow-auto'>
-                <div className=' container mx-auto px-4 '>
+                <div className=' container max-w-[940px] mx-auto px-4 '>
                     {
                         todoData.map((item,index) => (
-                            <Todo_things key={index} id={index} things={item.thing} done={item.done}/>
+                            <Todo_things key={index} id={item.id} things={item.thing} done={item.done}/>
                         ))
                     }
 
                 </div>
 
                 </div>
-             <div className=' container mx-auto px-4 '>
+             <div className=' container max-w-[940px] mx-auto px-4 '>
                 <div className='border-t-2 border-[#97a2df] mt-3 text-right text-[#8692d3] py-3'>
                     <div className='flex content-end'>
                         <div className='pr-2 w-full'>Move done things to end?</div>
