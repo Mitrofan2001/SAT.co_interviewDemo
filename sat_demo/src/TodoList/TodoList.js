@@ -2,45 +2,63 @@ import './style.css'
 import { useState } from 'react';
 import { Checkbox } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
+import classNames from 'classnames';
+import { Flag } from '@mui/icons-material';
 
 
 function TodoList(){
     //toDoData
-    const TodoData = {
-        todos: [
-            { id: 1, name: "Read book", done: true },
-            { id: 2, name: "Write letter", done: false },
-            { id: 3, name: "Edit cover", done: false }
-          ],
-    }
+    const [ todoData, setTodoData ] = useState([
+        { id:1, thing: "Read book", done: true },
+        { id:2, thing: "Write letter", done: false },
+        { id:3, thing: "Edit cover", done: false }
+    ]);
+
 
     //handle functioon
     function handleAddThings(){
         var inputThings=document.getElementById('Input').value;
-        console.log(inputThings);
+        setTodoData([
+            ...todoData,
+            {
+                id:todoData.length+1,
+                thing:inputThings,
+                done:false
+            }
+          ])
+        inputThings = '';
     }
 
-    function handleDoneChange(done){
-
-        console.log(done);
+    function handleDoneChange(doneKey){
+        setTodoData((todoData) =>
+            todoData.map((todo) => todo.id === doneKey+1 ? { ...todo, done: !todo.done } : todo))
+        console.log(doneKey);
     }
 
-    //component function
+    function handleDelete(deleteKey){
+        setTodoData(todoData.filter((_, i) => i !== deleteKey))
+    }
+
+    function handleMoveDone(){
+        console.log('handleMoveDone');
+    }
+
+    //components function
     function Todo_things(item){
         return(
             <div className='w-full h-[80px] rounded-[6px] bg-white mb-4 border-l-[6px] border-[#97a2df] flex'>  
             <div className='pt-[15px] px-3 '>
                 <Checkbox 
                 checked={item.done} 
-                onChange={handleDoneChange(item.done)}
+                onChange={()=>{handleDoneChange(item.id)}}
                 sx={{color:'#7c8ad8','&.Mui-checked': {color:'#7c8ad8'},'& .MuiSvgIcon-root': { fontSize: 30 }}}
                 />
             </div>
             <div className='w-full'>
-                <span className='leading-[75px] text-[#7683cf] text-[20px] line-through'>{item.things}</span>
+                <span className={classNames('leading-[75px] text-[#7683cf] text-[20px]',{'line-through':item.done })}>{item.things}</span>
             </div>
             <div className='pt-[26px] px-5'>
-                <CloseIcon className='text-[#98a1d3] text-[10px] cursor-pointer'/>
+                <CloseIcon onClick={()=>{handleDelete(item.id)}} className='text-[#98a1d3] text-[10px] cursor-pointer'/>
             </div>
             </div>
         )
@@ -64,8 +82,8 @@ function TodoList(){
                 <div className='h-[500px] overflow-auto'>
                 <div className=' container mx-auto px-4 '>
                     {
-                        TodoData.todos.map(item => (
-                            <Todo_things key={item.id} things={item.name} done={item.done}/>
+                        todoData.map((item,index) => (
+                            <Todo_things key={index} id={index} things={item.thing} done={item.done}/>
                         ))
                     }
 
@@ -83,8 +101,8 @@ function TodoList(){
                                 readOnly
                             />
                             <div
-                                onClick={() => {
-
+                                onClick = {() => {
+                                    handleMoveDone();
                                 }}
                                 className="w-11 h-6 bg-white rounded-full peer peer-focus:ring-[#adb2d4]  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-[#97a2df] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#97a2df]"
                             ></div>
@@ -93,12 +111,12 @@ function TodoList(){
                 </div>
 
                 <div className='text-[#909bda] text-[20px] mb-2'>Add to list</div>
-                <div className='flex'>
+                <form className='flex'>
                     <input id='Input' className='w-full rounded p-2'></input>
-                    <button className='h-100 w-12 ml-2 bg-[#7c8ad8] text-white rounded leading-10 text-2xl' onClick={() => {handleAddThings();}}>
+                    <button type='reset' className='h-100 w-12 ml-2 bg-[#7c8ad8] text-white rounded leading-10 text-2xl' onClick={() => {handleAddThings();}}>
                         <div className='mt-[-3px] mb-[3px]'>+</div>
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     )
