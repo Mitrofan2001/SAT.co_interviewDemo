@@ -34,7 +34,7 @@ function TodoList(){
     }
 
     function handleDelete(deleteKey){//刪除任務
-        setTodoData(todoData.filter((_, i) => i !== deleteKey))//在todoData中保留 所刪除內容以外的
+        setTodoData(todoData.filter((_, i) => i+1 !== deleteKey))//在todoData中保留 所刪除內容以外的
 
     }
 
