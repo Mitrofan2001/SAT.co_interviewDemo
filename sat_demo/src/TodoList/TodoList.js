@@ -1,22 +1,22 @@
 import './style.css'
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Checkbox } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import classNames from 'classnames';
-import { Flag } from '@mui/icons-material';
-
 
 function TodoList(){
     //toDoData
-    const [ todoData, setTodoData ] = useState([
-        { id:1, thing: "Read book", done: true },
-        { id:2, thing: "Write letter", done: false },
-        { id:3, thing: "Edit cover", done: false }
+    const [ todoData, setTodoData ] = useState([//資料內容
+        { id:1, thing: "deliever resume", done: true },
+        { id:2, thing: "play vollleyball game", done: false },
+        { id:3, thing: "coding", done: false },
+        { id:4, thing: "play pinao", done: true },
     ]);
-
+    const [isDoneMode,setDoneMode]=useState(false);//切換完成/未完成優先序
+    const [progress,setProgress] = useState(0) //上方進度條
 
     //handle functioon
-    function handleAddThings(){
+    function handleAddThings(){//增加任務
         var inputThings=document.getElementById('Input').value;
         setTodoData([
             ...todoData,
@@ -26,25 +26,47 @@ function TodoList(){
                 done:false
             }
           ])
-        inputThings = '';
     }
 
-    function handleDoneChange(doneKey){
+    function handleDoneChange(doneKey){//切換checkbox
         setTodoData((todoData) =>
-            todoData.map((todo) => todo.id === doneKey+1 ? { ...todo, done: !todo.done } : todo))
-        console.log(doneKey);
+            todoData.map((todo) => todo.id === doneKey+1 ? { ...todo, done: !todo.done } : todo))//找到對應的物件並修改值
     }
 
-    function handleDelete(deleteKey){
-        setTodoData(todoData.filter((_, i) => i !== deleteKey))
+    function handleDelete(deleteKey){//刪除任務
+        setTodoData(todoData.filter((_, i) => i !== deleteKey))//在todoData中保留 所刪除內容以外的
+
     }
 
-    function handleMoveDone(){
-        console.log('handleMoveDone');
+    function handleMoveDone(){//優先序切換
+        if(!isDoneMode){
+            const doneArray = todoData.filter(data => data.done === true);//已完成任務
+            const undoneArrary = todoData.filter(data => data.done === false);//未完成任務
+            const MoveDone = [...doneArray,...undoneArrary]
+            setTodoData(MoveDone);
+            setDoneMode(true);
+        }else{
+            const originData = []
+            for(let x=1;x<=todoData.length;x++){//依id(建立次序)進行排列
+                const addObj = todoData.filter(data => data.id === x)
+                originData.push(...addObj);
+            }
+            setTodoData(originData);
+            setDoneMode(false)
+        }
+
     }
+
+
+    useEffect(() => {//重新統計完成度
+            const doneArray = todoData.filter(data => data.done === true);
+            setProgress((Number(doneArray.length)/Number(todoData.length))*100)
+      });
+
+
 
     //components function
-    function Todo_things(item){
+    function Todo_things(item){//中間每個任務
         return(
             <div className='w-full h-[80px] rounded-[6px] bg-white mb-4 border-l-[6px] border-[#97a2df] flex'>  
             <div className='pt-[15px] px-3 '>
@@ -73,9 +95,9 @@ function TodoList(){
                     <div className='text-[#8b97da] text-[15px] mb-2'>Add things to do</div>
                 </div>
                 <div className='flex my-5'>
-                    <div className='mr-[15px] text-[#7780b3] text-sm'>50%</div>
-                    <div className='w-full bg-white flex rounded-2xl'>
-                        <div className='w-[30%] bg-[#97a2df] rounded-2xl'></div>
+                    <div className='mr-[15px] text-[#7780b3] w-[10%]'>{progress}%</div>
+                    <div className='w-full bg-white flex rounded-2xl my-1'>
+                        <div  style={{ width: `${progress}%` }} className='bg-[#97a2df] rounded-2xl'></div>
                     </div>
                 </div>
             </div>
